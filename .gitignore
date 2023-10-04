@@ -10,6 +10,10 @@
 .svn/
 migrate_working_dir/
 
+# flutter generated files
+*.freezed.dart
+*.g.dart
+*.lock
 # IntelliJ related
 *.iml
 *.ipr
