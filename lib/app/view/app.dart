@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:event_plus/counter/counter.dart';
+import 'package:event_plus/feature/qr_code_scan/presentation/scan_qr_code_screen.dart';
 import 'package:event_plus/l10n/l10n.dart';
+import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -16,7 +16,7 @@ class App extends StatelessWidget {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: const ScanQrCodeScreen(),
     );
   }
 }
