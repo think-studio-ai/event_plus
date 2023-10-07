@@ -1,3 +1,5 @@
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+
 enum QRCodeDataType {
   registration,
   workshop
@@ -10,7 +12,7 @@ class QRCodeData {
     required this.rawData,
     required this.type,
   });
-  final String rawData;
+  final Barcode rawData;
   final QRCodeDataType type;
 }
 
