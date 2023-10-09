@@ -1,4 +1,3 @@
-import 'package:event_plus/feature/qr_code_scan/presentation/scan_qr_code_screen.dart';
 import 'package:event_plus/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +15,13 @@ class App extends StatelessWidget {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const ScanQrCodeScreen(),
+      home: Scaffold(
+        body: Container(
+          child:  const Center(
+            child: Text('Home Screen'),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -14,6 +14,8 @@ migrate_working_dir/
 *.freezed.dart
 *.g.dart
 *.lock
+*.config.dart
+
 # IntelliJ related
 *.iml
 *.ipr
