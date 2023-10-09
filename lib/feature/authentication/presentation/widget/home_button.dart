@@ -43,10 +43,10 @@ class HomeButton extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Icon(
-                Icons.home,
-                color: Colors.white,
-                size: 40,
+              Image.asset(
+                assetPath,
+                height: 60,
+                fit: BoxFit.fitHeight,
               ),
             ],
           ),
