@@ -1,7 +1,8 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+    "registerAppbarTitle": "Registration",
+    "thinkAppbarTitle": "Think",
+    "homeAppBarTitle": "Home",
+    "registerEvent": "Register Event",
+    "scanAttendee": "Scan Attendee"
 }
