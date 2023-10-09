@@ -30,37 +30,30 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
   bool _isFlashLightOn = false;
   final QRCodeScannerRepository _qrCodeScannerRepository;
 
-  Future _startScanning(
+  Future<void> _startScanning(
     QrCodeScannerEvent event,
     Emitter<QrCodeScannerState> emit,
   ) async {
     emit(const QrCodeScannerState.loading(LoadingStatus.scanning));
-    final result = await _qrCodeScannerRepository.scanQRCode();
-
-    result.fold(
-      (l) => emit(QrCodeScannerState.error(l)),
-      (r) async {
-        await emit.onEach(
-          r,
-          onData: (data) {
-
-            emit(
-              QrCodeScannerState.caputred(
-                QRCodeData(type: QRCodeDataType.registration, rawData: data),
-              ),
-            );
-          },
-          onError: (e, s) {
-            log(e.toString());
-            emit(QrCodeScannerState.error(
-              UnknownCameraException(
-                message: e.toString(),
-              ),
+    final result = _qrCodeScannerRepository.scanQRCode();
+    try {
+      result.fold(
+        (l) => emit(QrCodeScannerState.error(l)),
+        (r) async {
+          await for (final qrCodeData in r) {
+            emit(QrCodeScannerState.caputred(
+              QRCodeData(type: QRCodeDataType.registration, rawData: qrCodeData),
             ));
-          },
-        );
-      },
-    );
+          }
+        },
+      );
+    } catch (e) {
+      emit(QrCodeScannerState.error(
+        UnknownCameraException(
+          message: e.toString(),
+        ),
+      ));
+    }
   }
 
   FutureOr<void> _onCreateQrController(
@@ -83,7 +76,7 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
       (l) => emit(QrCodeScannerState.error(l)),
       (r) {
         _isFlashLightOn = !_isFlashLightOn;
-        emit(QrCodeScannerState.flashlightToggled(_isFlashLightOn));
+        emit(QrCodeScannerState.flashlightToggled(isOn: _isFlashLightOn));
       },
     );
   }
