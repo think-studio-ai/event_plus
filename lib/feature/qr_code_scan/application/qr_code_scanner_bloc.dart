@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:event_plus/core/di/injector.dart';
@@ -41,18 +40,25 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
         (l) => emit(QrCodeScannerState.error(l)),
         (r) async {
           await for (final qrCodeData in r) {
-            emit(QrCodeScannerState.caputred(
-              QRCodeData(type: QRCodeDataType.registration, rawData: qrCodeData),
-            ));
+            emit(
+              QrCodeScannerState.caputred(
+                QRCodeData(
+                  type: QRCodeDataType.registration,
+                  rawData: qrCodeData,
+                ),
+              ),
+            );
           }
         },
       );
     } catch (e) {
-      emit(QrCodeScannerState.error(
-        UnknownCameraException(
-          message: e.toString(),
+      emit(
+        QrCodeScannerState.error(
+          UnknownCameraException(
+            message: e.toString(),
+          ),
         ),
-      ));
+      );
     }
   }
 

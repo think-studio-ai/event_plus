@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:event_plus/core/di/injector.dart';
 import 'package:flutter/widgets.dart';
-
-import 'core/di/injector.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();

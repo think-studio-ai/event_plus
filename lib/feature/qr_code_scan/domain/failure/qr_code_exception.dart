@@ -1,6 +1,4 @@
-
-abstract class QRCodeException extends Error{
-
+abstract class QRCodeException extends Error {
   QRCodeException({required this.message});
   final String message;
 }
@@ -16,4 +14,3 @@ class CameraPermissionException extends QRCodeException {
 class UnknownCameraException extends QRCodeException {
   UnknownCameraException({required super.message});
 }
-

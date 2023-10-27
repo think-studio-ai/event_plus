@@ -35,7 +35,7 @@ class QRCodeScanner implements QRCodeScannerRepository {
   @override
   Either<QRCodeException, Stream<Barcode>> scanQRCode() {
     try {
-      if(_controller == null) {
+      if (_controller == null) {
         return left(
           qr_code_exception.CameraException(
             message: 'Camera is not initialized',
@@ -89,7 +89,8 @@ class QRCodeScanner implements QRCodeScannerRepository {
 
   @override
   Either<qr_code_exception.QRCodeException, Unit> onCreateQrController(
-      QRViewController controller) {
+    QRViewController controller,
+  ) {
     try {
       _controller = controller;
       return right(unit);
@@ -105,18 +106,18 @@ class QRCodeScanner implements QRCodeScannerRepository {
   }
 
   @override
-  Either<QRCodeException, Unit> setPermissionForCamera(
-    BuildContext context,
-    qr_code_scanner.QRViewController ctrl,
-    bool p,
-  ) {
-    if (!p) {
+  Either<qr_code_exception.QRCodeException, Unit> setPermissionForCamera({
+    required BuildContext context,
+    required qr_code_scanner.QRViewController ctrl,
+    required bool permission,
+  }) {
+    if (!permission) {
       return left(
         qr_code_exception.CameraPermissionException(
           message: 'Permission denied',
         ),
       );
-    } else{
+    } else {
       return right(unit);
     }
   }

@@ -23,9 +23,9 @@ abstract interface class QRCodeScannerRepository {
   Either<QRCodeException, Unit> onDisposeQrController();
 
   /// set permission for camera
-  Either<QRCodeException,Unit> setPermissionForCamera(
-    BuildContext context,
-    QRViewController ctrl,
-    bool permission,
-  );
+  Either<QRCodeException, Unit> setPermissionForCamera({
+    required BuildContext context,
+    required QRViewController ctrl,
+    required bool permission,
+  });
 }
