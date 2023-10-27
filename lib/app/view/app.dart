@@ -16,8 +16,13 @@ class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('qrView')),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
         body: const Center(
           child: CallingQrCodeView(),
         ),
@@ -25,21 +30,23 @@ class MyHome extends StatelessWidget {
     );
   }
 }
+
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: QrCodeView(onCreateQrController: (qrViewController ) {
+      body: QrCodeView(
+        onCreateQrController: (qrViewController) {
           qrViewController.scannedDataStream.listen((scanData) {
-            if(scanData.code != null){
+            if (scanData.code != null) {
               qrViewController.stopCamera();
-              Navigator.pop(context,scanData.code);
+              Navigator.pop(context, scanData.code);
             }
-
           });
-        }, onPermissionSet: (QRViewController , bool ) {  },
+        },
+        onPermissionSet: (QRViewController, bool) {},
       ),
     );
   }
@@ -55,21 +62,49 @@ class CallingQrCodeView extends StatefulWidget {
 class _CallingQrCodeViewState extends State<CallingQrCodeView> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _navigateAndDisplaySelection(context);
-      },
-      child: const Text('Qr code'),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 200,
+          child: Image.asset(
+            "assets/moltqa.png",
+          ),
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () {
+                _navigateAndDisplaySelection(context);
+              },
+              child: Icon(
+                Icons.qr_code_scanner,
+                size: 150,
+              ),
+            ),
+            Text(
+              'Start Scanning',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        Image.asset(
+          "assets/think_logo_01.jpg",
+          width: 70,
+        ),
+      ],
     );
   }
+
   Future<void> _navigateAndDisplaySelection(BuildContext context) async {
-    final  result = await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const App()),
     );
     if (!mounted) return;
 
-    List<String> lines = const LineSplitter().convert(result as String);
+    var lines = const LineSplitter().convert(result as String);
     for (var i = lines.length - 1; i >= 0; i--) {
       if (lines[i].startsWith("BEGIN:VCARD") ||
           lines[i].startsWith("END:VCARD") ||
@@ -80,31 +115,47 @@ class _CallingQrCodeViewState extends State<CallingQrCodeView> {
 
     for (var i = lines.length - 1; i >= 0; i--) {
       if (!lines[i].startsWith(new RegExp(r'^\S+(:|;)'))) {
-        String tmpLine = lines[i];
-        String prevLine = lines[i - 1];
+        var tmpLine = lines[i];
+        var prevLine = lines[i - 1];
         lines[i - 1] = prevLine + ', ' + tmpLine;
         lines.removeAt(i);
       }
     }
-    final code = _strip(getWordOfPrefix('Key',lines) ?? '');
-    if(code != null){
+    final code = _strip(getWordOfPrefix('Key', lines) ?? '');
+    if (code != null) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
-          SnackBar(content:
-          Text('key is $code'),),);
-      final response = await http.get(Uri.parse('https://imceegypt.com/admin/public/entrance/$code'));
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('key is $code'),
+              ],
+            ),
+          ),
+        );
+      final response = await http
+          .get(Uri.parse('https://imceegypt.com/admin/public/entrance/$code'));
       if (response.statusCode == 200) {
         print(response.body);
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        QrModel model = QrModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+        var model =
+            QrModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
-             SnackBar(content:
-            Text('${model.name} ${model.status}'),),);
-
+            SnackBar(
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(model.name ?? ''),
+                  Text(model.status ?? ''),
+                ],
+              ),
+            ),
+          );
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
@@ -112,21 +163,22 @@ class _CallingQrCodeViewState extends State<CallingQrCodeView> {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(content:
-            Text('Error'),),);
+            const SnackBar(
+              content: Text('Error'),
+            ),
+          );
       }
-
-
-    }else{
+    } else {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(content:
-          Text('Error'),),);
+          const SnackBar(
+            content: Text('Error'),
+          ),
+        );
     }
-
-
   }
+
   String? _strip(String? baseString) {
     if (baseString == null) {
       return null;
@@ -137,11 +189,12 @@ class _CallingQrCodeViewState extends State<CallingQrCodeView> {
       return null;
     }
   }
-  String? getWordOfPrefix(String prefix , List<String> lines) {
+
+  String? getWordOfPrefix(String prefix, List<String> lines) {
     //returns a word of a particular prefix from the tokens minus the prefix [case insensitive]
     for (var i = 0; i < lines.length; i++) {
       if (lines[i].toUpperCase().startsWith(prefix.toUpperCase())) {
-        String word = lines[i];
+        var word = lines[i];
         word = word.substring(prefix.length, word.length);
         return word;
       }
@@ -149,6 +202,7 @@ class _CallingQrCodeViewState extends State<CallingQrCodeView> {
     return null;
   }
 }
+
 class QrModel {
   int? id;
   String? name;
@@ -165,11 +219,11 @@ class QrModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['lang'] = this.lang;
-    data['status'] = this.status;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['lang'] = lang;
+    data['status'] = status;
     return data;
   }
 }
